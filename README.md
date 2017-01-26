@@ -1,7 +1,7 @@
 # Cuatris-Python
 A small (378 lines) Tetris clone written in Python and using Pygame.
 
-[Cuatris-Python in action](images/Cuatris-Python.png)
+![Cuatris-Python in action](images/Cuatris-Python.png)
 
 ## Install Python 3.4
 Pygame won't work in upper releases, so **install specifically Python 3.4** (currently, minor version is 3.4.4). Check your platform guide browsing [Python website](https://www.python.org).
