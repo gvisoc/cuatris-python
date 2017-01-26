@@ -1,5 +1,5 @@
+#-*- coding: utf-8 -*-
 import pygame
-import pygame.freetype
 import random
 
 class Pieza:
@@ -263,14 +263,14 @@ class Cuatris:
         self.pantalla.blit(text, textrect)
 
     def marcador(self):
-        basicfont = pygame.freetype.SysFont(None, self.slot)
+        basicfont = pygame.font.SysFont(None, self.slot)
         self._imprime(basicfont,'Líneas: '+str(self.lineas), 13*self.slot, 8*self.slot, Cuatris.BLANCO, Cuatris.NEGRO)
         self._imprime(basicfont,'Nivel: '+str(self.nivel), 13*self.slot, 9*self.slot, Cuatris.GRIS, Cuatris.NEGRO)
         self._imprime(basicfont,'Siguiente: ' + str(self.lineas_siguiente_nivel), 13*self.slot, 10*self.slot, Cuatris.GRIS, Cuatris.NEGRO)
 
 
     def juego_terminado(self):
-        basicfont = pygame.freetype.SysFont(None, self.slot) # a refactorizar
+        basicfont = pygame.font.SysFont(None, self.slot) # a refactorizar
         left = self.pantalla.get_rect().centerx - len('JUEGO T')*self.slot
         top = self.pantalla.get_rect().centery
         self._imprime(basicfont,'JUEGO TERMINADO', left, top, Cuatris.ROJO, Cuatris.GRIS)
