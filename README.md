@@ -1,5 +1,5 @@
 # Cuatris-Python
-A small (378 lines) Tetris clone written in Python and using Pygame.
+A small (<378 lines) Tetris clone written in Python and using Pygame.
 
 ![Cuatris-Python in action](images/Cuatris-Python.png)
 
