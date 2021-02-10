@@ -20,7 +20,7 @@ $ pipenv install
 ```
 The right dependencies will install thanks to the files `Pipfile` and `Pipfile.lock`.
 
-## Run the game
+## Run the Game
 
 ```
 $ pipenv run python cuatris.py
@@ -33,7 +33,7 @@ $ pipenv shell
 ```
 
 ## Troubleshooting
-### The text doesn't render
+### The Text Doesn't Render
 Back in 2016, Pygame couldn't render fonts in macOS Sierra, and the Pygame window was freezing as a consequence of that. If you find that, still today, the Pygame window gets frozen under macOS, comment out all `pygame.font` usage. 
 
 Under GNU/Linux it runs OK, and it wasn't tested on macOS upper releases. 
