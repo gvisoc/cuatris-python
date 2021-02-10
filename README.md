@@ -34,7 +34,7 @@ $ pipenv shell
 
 ## Troubleshooting
 ### The text doesn't render
-Back in 2016, Pygame couldn't render fonts in my Macbook Pro running macOS Sierra, and Pygame Window was freezing as a consequence of that. If you find that under macOS the Pygame window gets frozen, comment out all `pygame.font` usage. 
+Back in 2016, Pygame couldn't render fonts in macOS Sierra, and the Pygame window was freezing as a consequence of that. If you find that, still today, the Pygame window gets frozen under macOS, comment out all `pygame.font` usage. 
 
 Under GNU/Linux it runs OK, and it wasn't tested on macOS upper releases. 
 
