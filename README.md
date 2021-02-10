@@ -38,22 +38,5 @@ Back in 2016, Pygame couldn't render fonts in macOS Sierra, and the Pygame windo
 
 Under GNU/Linux it runs OK, and it wasn't tested on macOS upper releases. 
 
-## Known Limitations or Issues
-The close window event is not correctly handled. If you close the Pygame window with its title bar's close button, you may have to kill the process manually; this will depend on your Windows Manager or Desktop Environment if you're using GNU/Linux. 
-
-To do that, suspend the game with `CTRL+Z` and kill the process by issuing a `kill -9` to the `PID` that was just printed:
-
-```bash
-(cuatris-python) $ python cuatris.py                              
-pygame 2.0.1 (SDL 2.0.14, Python 3.9.1)
-Hello from the pygame community. https://www.pygame.org/contribute.html
-^Z
-[1]  + 88494 suspended  python cuatris.py
-(cuatris-python) $ kill -9 88494
-[1]  + 88494 killed     python cuatris.py  
-(cuatris-python) $ 
-
-```
-
 ## Note
 This code was written in 2016 using IDLE solely for educational purposes. Tests, a more advanced / professional project structure and other Software-Engineering related improvements may, or may not, come in the future.
