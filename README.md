@@ -41,7 +41,7 @@ Under GNU/Linux it runs OK, and it wasn't tested on macOS upper releases.
 ## Known Limitations or Issues
 The close window event is not correctly handled. If you close the Pygame window with its title bar's close button, you may have to kill the process manually; this will depend on your Windows Manager or Desktop Environment if you're using GNU/Linux. 
 
-For that, suspend the game with CTRL+Z and kill the process by issuing a `kill -9` to the PID that was just printed:
+To do that, suspend the game with `CTRL+Z` and kill the process by issuing a `kill -9` to the `PID` that was just printed:
 
 ```bash
 (cuatris-python) $ python cuatris.py                              
