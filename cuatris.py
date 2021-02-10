@@ -304,8 +304,7 @@ class Cuatris:
             # QUIT (x)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
-                    is_continue = False
+                    return False
                 else:
                     # Process gravity
                     if event.type == Cuatris.GRAVITY:
@@ -361,15 +360,16 @@ class Cuatris:
             # Pause until next tick
             self.clock.tick(Cuatris.FPS)
             for event in pygame.event.get():
-                if event.type==pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                    return True
-                else:
-                    return False
+                if event.type==pygame.KEYDOWN: 
+                    if event.key == pygame.K_RETURN:
+                        return True
+                    else:
+                        return False
 
 play = True
 while play == True:
     game = Cuatris(30)
     play= game.run_game()
 
-print ("Game Over")
+print ("Thanks for playing!")
 pygame.quit()
