@@ -133,36 +133,36 @@ class Cuatris:
     ROJO = (200, 0, 0)
     AZUL = (0, 0, 200)
     AMARILLO = (200, 200, 0)
-    MARRON = (0, 200, 200)
-    BLANCO = (200, 200, 200)
-    colores = [NEGRO, GRIS, MARRON, AZUL, BLANCO, VERDE, ROJO, MAGENTA, AMARILLO]
+    CYAN = (0, 200, 200)
+    NARANJA = (255, 102, 16)
+    colores = [NEGRO, GRIS, CYAN, AZUL, NARANJA, VERDE, ROJO, MAGENTA, AMARILLO]
 
 
 
-    matriz_L = [(2, 0),
-                (2, 0),
-                (2, 2)]
+    matriz_L = [(7, 0),
+                (7, 0),
+                (7, 7)]
 
-    matriz_J = [(0, 3),
-                (0, 3),
-                (3, 3)]
-
-    matriz_I = [(4, 0),
-                (4, 0),
-                (4, 0),
-                (4, 0)]
-
-    matriz_S = [(0, 5, 5),
-                (5, 5, 0)]
-
-    matriz_Z = [(6, 6, 0),
-                (0, 6, 6)]
-
-    matriz_T = [(7, 7, 7),
-                (0, 7, 0)]
-
-    matriz_O = [(8, 8),
+    matriz_J = [(0, 8),
+                (0, 8),
                 (8, 8)]
+
+    matriz_I = [(6, 0),
+                (6, 0),
+                (6, 0),
+                (6, 0)]
+
+    matriz_S = [(0, 2, 2),
+                (2, 2, 0)]
+
+    matriz_Z = [(4, 4, 0),
+                (0, 4, 4)]
+
+    matriz_T = [(5, 5, 5),
+                (0, 5, 0)]
+
+    matriz_O = [(3, 3),
+                (3, 3)]
 
     matrices = [0, 0, matriz_L, matriz_J, matriz_I, matriz_S, matriz_Z, matriz_T, matriz_O]
 
