@@ -8,6 +8,8 @@ pygame = "*"
 
 [dev-packages]
 pre-commit = "*"
+black = "*"
+flake8 = "3.7.9"
 
 [requires]
 python_version = "3.9"
