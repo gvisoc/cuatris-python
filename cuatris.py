@@ -17,12 +17,12 @@ class Piece:
         self.compute_size()
 
     def compute_size(self):
-        """computes the dimensions of the piece, in rows and columns"""
+        """Computes the dimensions of the piece, in rows and columns"""
         self.rows = len(self.matrix)
         self.columns = len(self.matrix[0])
 
     def rotate90(self):
-        """turns a piece 90 degrees, clockwise"""
+        """Turns a piece 90 degrees, clockwise"""
         self.matrix = list(zip(*self.matrix[::-1]))
         self.compute_size()
 
@@ -32,7 +32,8 @@ class Piece:
         self.compute_size()
 
     def _draw_square(self, x, y, color):
-        """Draws a square in the given (row, columns -- not pixels) coordinates"""
+        """Draws a square in the given (row, columns -- not pixels)
+        coordinates"""
         square = (
             x * self.square_side,
             y * self.square_side,
@@ -54,11 +55,12 @@ class Piece:
         pygame.draw.rect(self.display, color, inner_square, 0)
 
     def _delete_rectangle(self, rectangle):
-        """deletes the specified area"""
+        """Deletes the specified area"""
         pygame.draw.rect(self.display, Cuatris.colors[0], rectangle, 0)
 
     def draw(self, x_ini, y_ini):
-        """draws the specified piece from the coordinates (rows, columns --not pixels) x_ini, y_ini"""
+        """Draws the specified piece from the coordinates (rows, columns
+        --not pixels) x_ini, y_ini"""
         # update the position of the piece
         self.x = x_ini
         self.y = y_ini
@@ -70,7 +72,8 @@ class Piece:
                     )
 
     def delete(self, x_ini, y_ini):
-        """deletes the specified piece from the coordinates (rows, columns --not pixels) x_ini, y_ini"""
+        """Deletes the specified piece from the coordinates (rows, columns
+        --not pixels) x_ini, y_ini"""
         for i in range(0, len(self.matrix)):
             for j in range(0, len(self.matrix[i])):
                 if self.matrix[i][j] != 0:
@@ -78,20 +81,22 @@ class Piece:
 
     # Piece movement
     def move(self, delta_x, delta_y):
-        """moves the piece the given delta, expressed in rows and columns --not pixels"""
+        """Moves the piece the given delta, expressed in rows and columns
+        --not pixels"""
         self.x = self.x + delta_x
         self.y = self.y + delta_y
 
     # Piece status
     def self_draw(self):
-        """draws the piece in its coordinates"""
+        """Draws the piece in its coordinates"""
         self.draw(self.x, self.y)
 
     def self_delete(self):
-        """deletes the piece from its coordinates"""
+        """Deletes the piece from its coordinates"""
         self.delete(self.x, self.y)
 
     def is_colliding_with(self, other):
+        """Checks for the collision of this piece with other"""
         for i in range(0, len(self.matrix)):
             for j in range(0, len(self.matrix[i])):
                 if self.matrix[i][j] != 0:
@@ -104,7 +109,8 @@ class Container(Piece):
     """Container where the game takes place"""
 
     def _remove_row(self, row):
-        """removes the given row, adding a new one on the top of the Container"""
+        """removes the given row, adding a new one on the top of the
+        Container"""
         for row in range(row, 0, -1):
             self.matrix[row] = self.matrix[row - 1]
         self.matrix[0] = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
@@ -124,8 +130,9 @@ class Container(Piece):
         return lines
 
     def incorporate(self, other_piece):
-        """incorporates the other piece\'s matrix to the Container, returning the number of completed rows --this is t
-        be used when a piece collides with the bottom of the container"""
+        """incorporates the other piece\'s matrix to the Container, returning
+        the number of completed rows --this is to be used when a piece
+        collides with the bottom of the container"""
         for i in range(0, len(other_piece.matrix)):
             for j in range(0, len(other_piece.matrix[i])):
                 if other_piece.matrix[i][j] != 0:
@@ -151,8 +158,9 @@ class Cuatris:
     ORANGE = (255, 102, 16)
     colors = [BLACK, GRAY, CYAN, BLUE, ORANGE, GREEN, RED, PURPLE, YELLOW]
 
-    # These are the matrix for the different pieces of the game. The numbers will index
-    # the color in the previous array, so that then it is easy for the game to draw it.
+    # These are the matrix for the different pieces of the game. The numbers
+    # will index the color in the previous array, so that then it is easy for
+    # the game to draw it.
 
     matrix_L = [(7, 0), (7, 0), (7, 7)]
 
@@ -263,11 +271,13 @@ class Cuatris:
         pygame.time.set_timer(Cuatris.GRAVITY, self.t_GRAVITY)
 
     def get_next_piece(self):
+        """Creates a random next piece"""
         n_piece = random.randint(2, 8)
         piece = Piece(self.matrices[n_piece], self.display, self.slot)
         return piece
 
     def _print(self, font, string, left, top, color, background):
+        """Prints a string"""
         text = font.render(string, True, color, background)
         text_rectangle = text.get_rect()
         text_rectangle.left = left
@@ -275,6 +285,7 @@ class Cuatris:
         self.display.blit(text, text_rectangle)
 
     def score(self):
+        """Prints the score"""
         basic_font = pygame.font.SysFont(None, self.slot)
         self._print(
             basic_font,
@@ -302,6 +313,7 @@ class Cuatris:
         )
 
     def game_over(self):
+        """Prompts the user for a next game / quit"""
         basic_font = pygame.font.SysFont(None, self.slot)  # to refactor
         left = self.display.get_rect().centerx - len("GAME O") * self.slot
         top = self.display.get_rect().centery
@@ -319,6 +331,7 @@ class Cuatris:
 
     @staticmethod
     def turn(counterclockwise, piece, container):
+        """Turns a piece"""
         piece.self_delete()
         if counterclockwise:
             piece.rotate_minus_90()
@@ -330,6 +343,7 @@ class Cuatris:
 
     @staticmethod
     def move_right(units, piece, container):
+        """Moves a piece the given units (squares) to the right"""
         piece.self_delete()
         piece.move(units, 0)
         if piece.is_colliding_with(container):
@@ -337,6 +351,8 @@ class Cuatris:
         piece.self_draw()
 
     def _process_gravity(self):
+        """This method makes the current puece fall 1 square, and checks for
+        the consequences of it"""
         game_should_continue = True
 
         # Move a piece one square downwards
@@ -359,7 +375,8 @@ class Cuatris:
                 self.lines_for_next_level = self.lines_for_next_level + 20
                 if self.t_GRAVITY > 100:
                     self.t_GRAVITY = self.t_GRAVITY - 1000
-            # Update score, spawn a new piece and calculate and redraw next piece
+            # Update score, spawn a new piece and calculate and redraw next
+            # piece
             self.score()
             self.container.self_draw()
             self.next_piece.self_delete()
@@ -376,8 +393,9 @@ class Cuatris:
         return game_should_continue
 
     def _play_again(self):
-        """Process the user response to the question of whether he/she wants to play again.
-        Return returns True to play again; any other key returns False to exit the game."""
+        """Process the user response to the question of whether he/she wants to
+        play again. Return returns True to play again; any other key returns
+        False to exit the game."""
         while True:
             # Pause until next tick
             self.clock.tick(Cuatris.FPS)
@@ -389,7 +407,7 @@ class Cuatris:
                         return False
 
     def run_game(self):
-
+        """Game and Event loop"""
         is_continue = True
 
         self.score()
