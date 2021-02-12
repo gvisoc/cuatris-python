@@ -3,6 +3,7 @@ import pygame
 import random
 
 
+
 class Piece:
     """The model of a piece"""
 
