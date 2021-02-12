@@ -351,7 +351,7 @@ class Cuatris:
         piece.self_draw()
 
     def _process_gravity(self):
-        """This method makes the current puece fall 1 square, and checks for
+        """This method makes the current piece fall 1 square, and checks for
         the consequences of it"""
         game_should_continue = True
 
