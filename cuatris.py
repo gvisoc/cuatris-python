@@ -1,11 +1,15 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import pygame
 import random
 
+
 class Piece:
-    'The model of a piece'
+    """The model of a piece"""
+
     def __init__(self, matrix, display, square_side):
         self.matrix = matrix
+        self.rows = 0
+        self.columns = 0
         self.display = display
         self.square_side = square_side
         self.x = 0
@@ -13,120 +17,124 @@ class Piece:
         self.compute_size()
 
     def compute_size(self):
-        'Computes the dimensions of the piece, in rows and columns'
+        """computes the dimensions of the piece, in rows and columns"""
         self.rows = len(self.matrix)
         self.columns = len(self.matrix[0])
 
     def rotate90(self):
-        'Turns a piece 90 degrees, clockwise'
+        """turns a piece 90 degrees, clockwise"""
         self.matrix = list(zip(*self.matrix[::-1]))
         self.compute_size()
 
-    def rotateM90(self):
-        'Turns a piece 90 degrees, counterclockwise'
+    def rotate_minus_90(self):
+        """Turns a piece 90 degrees, counterclockwise"""
         self.matrix = list(zip(*self.matrix))[::-1]
         self.compute_size()
 
     def __draw_square(self, x, y, color):
-        'Draws a square in the given (row, columns -- not pixels) coordinates'
-        square = (x*self.square_side,
-                    y*self.square_side,
-                    self.square_side,
-                    self.square_side)
-        inner_square = (x*self.square_side+8,
-                            y*self.square_side+8,
-                            self.square_side-16,
-                            self.square_side-16)
+        """Draws a square in the given (row, columns -- not pixels) coordinates"""
+        square = (x * self.square_side,
+                  y * self.square_side,
+                  self.square_side,
+                  self.square_side)
+        inner_square = (x * self.square_side + 8,
+                        y * self.square_side + 8,
+                        self.square_side - 16,
+                        self.square_side - 16)
         pygame.draw.rect(self.display,
-                         (int(color[0]/2),
-                          int(color[1]/2),
-                          int(color[2]/2)),
+                         (int(color[0] / 2),
+                          int(color[1] / 2),
+                          int(color[2] / 2)),
                          square,
                          0)
         pygame.draw.rect(self.display, color, inner_square, 0)
 
     def __delete_rectangle(self, rectangle):
-        'deletes the specified area'
+        """deletes the specified area"""
         pygame.draw.rect(self.display, Cuatris.colors[0], rectangle, 0)
 
     def draw(self, x_ini, y_ini):
-        'draws the specified piece from the coordinates (rows, columns --not pixels) x_ini, y_ini'
-        # actualizamos la posición de la pieza
+        """draws the specified piece from the coordinates (rows, columns --not pixels) x_ini, y_ini"""
+        # update the position of the piece
         self.x = x_ini
         self.y = y_ini
-        for i in range(0,len(self.matrix)):
-            for j in range(0,len(self.matrix[i])):
+        for i in range(0, len(self.matrix)):
+            for j in range(0, len(self.matrix[i])):
                 if self.matrix[i][j] != 0:
-                    self.__draw_square(x_ini+j, y_ini+i, Cuatris.colors[self.matrix[i][j]])
+                    self.__draw_square(x_ini + j, y_ini + i, Cuatris.colors[self.matrix[i][j]])
 
     def delete(self, x_ini, y_ini):
-        'deletes the specified piece from the coordinates (rows, columns --not pixels) x_ini, y_ini'
-        for i in range(0,len(self.matrix)):
-            for j in range(0,len(self.matrix[i])):
+        """deletes the specified piece from the coordinates (rows, columns --not pixels) x_ini, y_ini"""
+        for i in range(0, len(self.matrix)):
+            for j in range(0, len(self.matrix[i])):
                 if self.matrix[i][j] != 0:
-                    self.__draw_square(x_ini+j, y_ini+i, Cuatris.colors[0])
+                    self.__draw_square(x_ini + j, y_ini + i, Cuatris.colors[0])
 
     # Piece movement
     def move(self, delta_x, delta_y):
-        'moves the piece the given delta, expressed in rows and columns --not pixels'
+        """moves the piece the given delta, expressed in rows and columns --not pixels"""
         self.x = self.x + delta_x
         self.y = self.y + delta_y
 
     # Piece status
     def self_draw(self):
-        'draws the piece in its coordinates'
+        """draws the piece in its coordinates"""
         self.draw(self.x, self.y)
 
     def self_delete(self):
-        'deletes the piece from its coordinates'
+        """deletes the piece from its coordinates"""
         self.delete(self.x, self.y)
 
     def is_colliding_with(self, other):
-        for i in range(0,len(self.matrix)):
-            for j in range(0,len(self.matrix[i])):
+        for i in range(0, len(self.matrix)):
+            for j in range(0, len(self.matrix[i])):
                 if self.matrix[i][j] != 0:
                     if other.matrix[self.y + i][self.x + j] != 0:
                         return True
         return False
 
+
 class Container(Piece):
-    'Container where the game takes place'
+    """Container where the game takes place"""
+
     def __remove_row(self, row):
-        'removes the given row, adding a new one on the top of the Container'
+        """removes the given row, adding a new one on the top of the Container"""
         for row in range(row, 0, -1):
             self.matrix[row] = self.matrix[row - 1]
         self.matrix[0] = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
 
     def count_lines(self, other_piece):
-        'checks how many lines are completed with a new piece'
+        """checks how many lines are completed with a new piece"""
         lines = 0
         for row in range(other_piece.y, other_piece.y + other_piece.rows):
-            product = 1;
+            product = 1
             for value in self.matrix[row]:
                 product = product * value
                 if product == 0:
                     break
             if product > 0:
-                lines = lines +1
+                lines = lines + 1
                 self.__remove_row(row)
         return lines
 
     def incorporate(self, other_piece):
-        'incorporates the other piece\'s matrix to the Container, returning the number of completed rows --this is to be used when a piece collides with the bottom of the container'
-        for i in range(0,len(other_piece.matrix)):
-            for j in range(0,len(other_piece.matrix[i])):
+        """incorporates the other piece\'s matrix to the Container, returning the number of completed rows --this is t
+        be used when a piece collides with the bottom of the container """
+        for i in range(0, len(other_piece.matrix)):
+            for j in range(0, len(other_piece.matrix[i])):
                 if other_piece.matrix[i][j] != 0:
-                    self.matrix[other_piece.y+i][other_piece.x+j] = other_piece.matrix[i][j]
+                    self.matrix[other_piece.y + i][other_piece.x + j] = other_piece.matrix[i][j]
         return self.count_lines(other_piece)
 
+
 class Cuatris:
-    'Cuatris Object: implements game logic'
+    """Cuatris Object: implements game logic"""
 
     # Color definitions
-    WHITE = (255,255,255)
-    GRAY = (127,127,127)
+    WHITE = (255, 255, 255)
+    GRAY = (127, 127, 127)
     BLACK = (0, 0, 0)
-    PURPLE = (200,0,200)
+    PURPLE = (200, 0, 200)
     GREEN = (0, 200, 0)
     RED = (200, 0, 0)
     BLUE = (0, 0, 200)
@@ -135,10 +143,11 @@ class Cuatris:
     ORANGE = (255, 102, 16)
     colors = [BLACK, GRAY, CYAN, BLUE, ORANGE, GREEN, RED, PURPLE, YELLOW]
 
-
+    # These are the matrix for the different pieces of the game. The numbers will index
+    # the color in the previous array, so that then it is easy for the game to draw it.
 
     matrix_L = [(7, 0),
-               (7, 0),
+                (7, 0),
                 (7, 7)]
 
     matrix_J = [(0, 8),
@@ -165,24 +174,19 @@ class Cuatris:
     matrices = [0, 0, matrix_L, matrix_J, matrix_I, matrix_S, matrix_Z, matrix_T, matrix_O]
 
     next_matrix = [[1, 1, 1, 1, 1, 1],
-                        [1, 0, 0, 0, 0, 1],
-                        [1, 0, 0, 0, 0, 1],
-                        [1, 0, 0, 0, 0, 1],
-                        [1, 0, 0, 0, 0, 1],
-                        [1, 1, 1, 1, 1, 1]]
+                   [1, 0, 0, 0, 0, 1],
+                   [1, 0, 0, 0, 0, 1],
+                   [1, 0, 0, 0, 0, 1],
+                   [1, 0, 0, 0, 0, 1],
+                   [1, 1, 1, 1, 1, 1]]
 
-
-
-    # Nº de cuadros por segundo
+    # Frames per Second
     FPS = 60
 
-    # Lado del cuadrado por defecto
-    SLOT = 40
-
-    # Evento de Gravedad
+    # Gravity Event
     GRAVITY = pygame.USEREVENT + 1
 
-    # Coordenadas iniciales de las piezas
+    # Initial coordinates for the pieces
     x_ini = 4
     y_ini = 0
 
@@ -191,50 +195,50 @@ class Cuatris:
             self.slot = int(square_side)
         except ValueError:
             # Default value
-            self.slot = SLOT
+            self.slot = 40
         self.lines = 0
         self.lines_for_next_level = 20
         self.level = 0
-        self.width = 21*self.slot
-        self.height = 22*self.slot
-        
+        self.width = 19 * self.slot
+        self.height = 22 * self.slot
+
         pygame.init()
 
         # display definition
         self.display = pygame.display.set_mode((self.width, self.height))
         self.display.fill(Cuatris.BLACK)
-        matrix_Container = [[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-        self.next = Container (Cuatris.next_matrix, self.display, self.slot)
+        matrix_container = [[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
+        self.next = Container(Cuatris.next_matrix, self.display, self.slot)
         self.next.draw(13, 0)
 
-        self.container = Container (matrix_Container, self.display, self.slot)
+        self.container = Container(matrix_container, self.display, self.slot)
         self.container.draw(0, 0)
 
         self.piece = self.get_next_piece()
-        self.piece.draw(4,0)
+        self.piece.draw(4, 0)
         self.next_piece = self.get_next_piece()
-        self.next_piece.draw(15,1)
+        self.next_piece.draw(15, 1)
 
         pygame.display.update()
 
@@ -244,49 +248,52 @@ class Cuatris:
         # Gravity Event
 
         self.t_FALL = 70
-        self.t_GRAVITY = 2000 #milisegundos
+        self.t_GRAVITY = 2000  # milliseconds
         pygame.time.set_timer(Cuatris.GRAVITY, self.t_GRAVITY)
-
 
     def get_next_piece(self):
         n_piece = random.randint(2, 8)
-        piece = Piece (self.matrices[n_piece], self.display, self.slot)
+        piece = Piece(self.matrices[n_piece], self.display, self.slot)
         return piece
 
     def _print(self, font, string, left, top, color, background):
         text = font.render(string, True, color, background)
-        textrect = text.get_rect()
-        textrect.left= left
-        textrect.top= top
-        self.display.blit(text, textrect)
+        text_rectangle = text.get_rect()
+        text_rectangle.left = left
+        text_rectangle.top = top
+        self.display.blit(text, text_rectangle)
 
     def score(self):
-        basicfont = pygame.font.SysFont(None, self.slot)
-        self._print(basicfont,'Lines: '+str(self.lines), 13*self.slot, 8*self.slot, Cuatris.WHITE, Cuatris.BLACK)
-        self._print(basicfont,'Level: '+str(self.level), 13*self.slot, 9*self.slot, Cuatris.GRAY, Cuatris.BLACK)
-        self._print(basicfont,'Next: ' + str(self.lines_for_next_level), 13*self.slot, 10*self.slot, Cuatris.GRAY, Cuatris.BLACK)
-
+        basic_font = pygame.font.SysFont(None, self.slot)
+        self._print(basic_font, 'Lines: ' + str(self.lines), 13 * self.slot, 8 * self.slot, Cuatris.WHITE,
+                    Cuatris.BLACK)
+        self._print(basic_font, 'Level: ' + str(self.level), 13 * self.slot, 9 * self.slot, Cuatris.GRAY,
+                    Cuatris.BLACK)
+        self._print(basic_font, 'Next: ' + str(self.lines_for_next_level), 13 * self.slot, 10 * self.slot,
+                    Cuatris.GRAY, Cuatris.BLACK)
 
     def game_over(self):
-        basicfont = pygame.font.SysFont(None, self.slot) # to refactor
-        left = self.display.get_rect().centerx - len('GAME O')*self.slot
+        basic_font = pygame.font.SysFont(None, self.slot)  # to refactor
+        left = self.display.get_rect().centerx - len('GAME O') * self.slot
         top = self.display.get_rect().centery
-        self._print(basicfont,'GAME OVER', left, top, Cuatris.RED, Cuatris.GRAY)
-        self._print(basicfont,'RETURN TO START OVER', left, top+self.slot, Cuatris.RED, Cuatris.GRAY)
+        self._print(basic_font, 'GAME OVER', left, top, Cuatris.RED, Cuatris.GRAY)
+        self._print(basic_font, 'RETURN TO START OVER', left, top + self.slot, Cuatris.RED, Cuatris.GRAY)
 
-    def turn(self, counterclockwise, piece, container):
+    @staticmethod
+    def turn(counterclockwise, piece, container):
         piece.self_delete()
         if counterclockwise:
-            piece.rotateM90()
+            piece.rotate_minus_90()
         else:
             piece.rotate90()
         while piece.is_colliding_with(container):
-            piece.move(-1,0)
+            piece.move(-1, 0)
         piece.self_draw()
 
-    def move_right(self, units, piece, container):
+    @staticmethod
+    def move_right(units, piece, container):
         piece.self_delete()
-        piece.move(units,0)
+        piece.move(units, 0)
         if piece.is_colliding_with(container):
             piece.move(-units, 0)
         piece.self_draw()
@@ -312,12 +319,12 @@ class Cuatris:
                         self.piece.move(0, 1)
                         if self.piece.is_colliding_with(self.container):
                             pygame.time.set_timer(Cuatris.GRAVITY, self.t_GRAVITY)
-                            self.piece.move(0,-1)
+                            self.piece.move(0, -1)
                             self.container.self_delete()
                             self.lines = self.lines + self.container.incorporate(self.piece)
                             # levels
                             if self.lines >= self.lines_for_next_level:
-                                self.level = self.level +1
+                                self.level = self.level + 1
                                 self.lines_for_next_level = self.lines_for_next_level + 20
                                 if self.t_GRAVITY > 100:
                                     self.t_GRAVITY = self.t_GRAVITY - 1000
@@ -325,51 +332,47 @@ class Cuatris:
                             self.container.self_draw()
                             self.next_piece.self_delete()
                             self.piece = self.next_piece
-                            self.piece.draw(4,0)
+                            self.piece.draw(4, 0)
                             self.next_piece = self.get_next_piece()
-                            self.next_piece.draw(15,1)
+                            self.next_piece.draw(15, 1)
                             if self.piece.is_colliding_with(self.container):
                                 is_continue = False
                                 self.game_over()
                         else:
                             self.piece.self_draw()
-
                     if event.type == pygame.KEYDOWN:
-
                         # Piece turning can cause collisions to the right
                         if event.key == pygame.K_z:
                             self.turn(True, self.piece, self.container)
-
                         if event.key == pygame.K_x:
                             self.turn(False, self.piece, self.container)
-
                         if event.key == pygame.K_LEFT:
-                            self.move_right(-1,self.piece, self.container)
-
+                            self.move_right(-1, self.piece, self.container)
                         if event.key == pygame.K_RIGHT:
-                            self.move_right(1,self.piece, self.container)
-
+                            self.move_right(1, self.piece, self.container)
                         # accelerate gravity
                         if event.key == pygame.K_DOWN:
                             pygame.time.set_timer(Cuatris.GRAVITY, self.t_FALL)
-                        else:
-                            pygame.time.set_timer(Cuatris.GRAVITY, self.t_GRAVITY)
 
-                    pygame.display.update()
+                    # Release any key means fall speed back to gravity
+                    if event.type == pygame.KEYUP:
+                        pygame.time.set_timer(Cuatris.GRAVITY, self.t_GRAVITY)
+                pygame.display.update()
         while True:
             # Pause until next tick
             self.clock.tick(Cuatris.FPS)
             for event in pygame.event.get():
-                if event.type==pygame.KEYDOWN: 
+                if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         return True
                     else:
                         return False
 
-play = True
-while play == True:
-    game = Cuatris(30)
-    play= game.run_game()
 
-print ("Thanks for playing!")
+play = True
+while play:
+    game = Cuatris(30)
+    play = game.run_game()
+
+print("Thanks for playing!")
 pygame.quit()

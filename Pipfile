@@ -7,6 +7,7 @@ name = "pypi"
 pygame = "*"
 
 [dev-packages]
+pre-commit = "*"
 
 [requires]
 python_version = "3.9"
