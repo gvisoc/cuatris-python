@@ -1,4 +1,8 @@
-# Cuatris-Python
+# Cuatris-Python (Archived)
+> **Warning**
+> This repository is **archived** in GitHub and will no longer be maintained here.
+> This repository lives [here](https://forja.gvisoc.com/gabriel/cuatris-python) now.
+
 A small Tetris clone written in Python and using Pygame.
 
 ![Cuatris-Python in action](images/Cuatris-Python.png)
